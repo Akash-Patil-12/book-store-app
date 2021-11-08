@@ -17,14 +17,14 @@ class _homeState extends State<home> {
   final FocusNode _focusNode = FocusNode();
   String dropdownValue = 'Sort by relevance';
   List<Book> bookData = [];
-  List<Book> allBookData = [];
+  List<Book> filterBookData = [];
   int cardCount = 0;
   Future<void> getBookData() async {
-    allBookData = await readBookJson(); ////change name...
+    filterBookData = await readBookJson();
     print(bookData);
     int count = await getCardCount();
     setState(() {
-      bookData = allBookData;
+      bookData = filterBookData;
       cardCount = count;
     });
     print('*******************************************************');
@@ -54,7 +54,7 @@ class _homeState extends State<home> {
                       if (value.isNotEmpty) {
                         setState(() {
                           //   bookData = allBookData;
-                          bookData = allBookData
+                          bookData = filterBookData
                               .where((bookData) => bookData.title
                                   .toString()
                                   .toLowerCase()
@@ -67,7 +67,7 @@ class _homeState extends State<home> {
                       if (value.isEmpty) {
                         print('..........else..........');
                         setState(() {
-                          bookData = allBookData;
+                          bookData = filterBookData;
                         });
                       }
                     },
@@ -251,8 +251,6 @@ class _homeState extends State<home> {
                                                         bookData[index].price,
                                                   };
                                                   FirebaseFirestore.instance
-
-                                                      ///create new method
                                                       .collection("Add-To-Card")
                                                       .add(bookCardData);
                                                 },

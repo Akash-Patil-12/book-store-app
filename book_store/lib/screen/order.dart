@@ -18,7 +18,7 @@ class _OrderState extends State<Order> {
         leading: InkWell(
           child: const Icon(Icons.arrow_back),
           onTap: () {
-            Navigator.pushNamed(context, '/addToCard');
+            Navigator.pushNamed(context, '/card_list');
           },
         ),
         title: Row(children: [
