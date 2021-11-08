@@ -70,57 +70,152 @@ class _OrderState extends State<Order> {
           )
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Order Placed Successfully',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'hurray!! your order is confirmed',
-              style: TextStyle(fontSize: 13),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'The order id is #123456 save the order id for',
-              style: TextStyle(fontSize: 13),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              'further communication.',
-              style: TextStyle(fontSize: 13),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextButton(
-              child: const Text(
-                'CONTINUE SHOPPING',
-                style: TextStyle(fontSize: 11, color: Colors.white),
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          // height: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Image.asset(
+              //   "assets/images/orderSuccessfull-1.png",
+              //   height: 100,
+              //   width: 100,
+              // ),
+              const SizedBox(
+                height: 80,
               ),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.black),
-                  borderRadius: BorderRadius.circular(4.0),
-                )),
+              Text(
+                'Order Placed Successfully',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
-            ),
-          ],
+              SizedBox(
+                height: 10,
+              ),
+              // Image.asset(
+              //   "assets/images/orderSuccessfull-2.png",
+              //   height: 60,
+              //   width: 60,
+              // ),
+              Text(
+                'hurray!! your order is confirmed',
+                style: TextStyle(fontSize: 13),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'The order id is #123456 save the order id for',
+                style: TextStyle(fontSize: 13),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                'further communication.',
+                style: TextStyle(fontSize: 13),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Table(
+                    //defaultColumnWidth: FixedColumnWidth(120.0),
+                    border: TableBorder.all(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 2),
+                    children: [
+                      TableRow(children: [
+                        Column(children: [
+                          Text('Email us', style: TextStyle(fontSize: 20.0))
+                        ]),
+                        Column(children: [
+                          Text('Contact us', style: TextStyle(fontSize: 20.0))
+                        ]),
+                        Column(children: [
+                          Text('Address', style: TextStyle(fontSize: 20.0))
+                        ]),
+                      ]),
+                      TableRow(children: [
+                        Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Text('admin@bookstore.com'),
+                          )
+                        ]),
+                        Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Text('+91 8163475881'),
+                          )
+                        ]),
+                        Column(children: [
+                          Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Text(
+                                '42, 14th Main, 15th Cross, Sector 4, opp to BDA /n complex, near Kumarakom restaurant, HSR Layout, Bangalore 560034'),
+                          )
+                        ]),
+                      ]),
+                    ]),
+              ),
+              // SingleChildScrollView(
+              //   child: DataTable(columnSpacing: 10, columns: const <DataColumn>[
+
+              //     DataColumn(
+              //       label: Text(
+              //         'Email us',
+              //         style: TextStyle(fontStyle: FontStyle.italic),
+              //       ),
+              //     ),
+              //     DataColumn(
+              //       label: Text(
+              //         'Contact us',
+              //         style: TextStyle(fontStyle: FontStyle.italic),
+              //       ),
+              //     ),
+              //     DataColumn(
+              //       label: Text(
+              //         'Address',
+              //         style: TextStyle(fontStyle: FontStyle.italic),
+              //       ),
+              //     ),
+              //   ], rows:
+
+              //    const <DataRow>[
+              //     DataRow(
+              //       cells: <DataCell>[
+              //         DataCell(Text('admin@bookstore.com')),
+              //         DataCell(Text('+91 8163475881')),
+              //         DataCell(
+              //           Text(
+              //               '42, 14th Main, 15th Cross, Sector 4, opp to BDA /n complex, near Kumarakom restaurant, HSR Layout, Bangalore 560034'),
+              //         ),
+              //       ],
+              //     ),
+              //   ]),
+              // ),
+              TextButton(
+                child: const Text(
+                  'CONTINUE SHOPPING',
+                  style: TextStyle(fontSize: 11, color: Colors.white),
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.blue),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(4.0),
+                  )),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/home');
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

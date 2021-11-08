@@ -81,6 +81,8 @@ flutter:
     - assets/images/book18.png
     - assets/images/book20.png
     - assets/images/book21.png
+    - assets/images/orderSuccessfull-1.png
+    - assets/images/orderSuccessfull-2.png
     - assets/books.json
 
 
