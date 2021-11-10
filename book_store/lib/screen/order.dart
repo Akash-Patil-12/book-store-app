@@ -1,3 +1,5 @@
+import 'package:book_store/model/books.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Order extends StatefulWidget {
@@ -9,8 +11,25 @@ class Order extends StatefulWidget {
 
 class _OrderState extends State<Order> {
   final FocusNode _focusNode = FocusNode();
+  Map orderData = {};
+  int itemCount = 1;
+  Future<void> getCardDataCount() async {
+    int count = await getCardCount();
+    setState(() {
+      itemCount = count;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCardDataCount();
+  }
+
   @override
   Widget build(BuildContext context) {
+    orderData = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -55,15 +74,13 @@ class _OrderState extends State<Order> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child: const Text("1",
-                      style: TextStyle(fontSize: 15, color: Colors.red)),
+                  child: Text(itemCount.toString(),
+                      style: const TextStyle(fontSize: 15, color: Colors.red)),
                 ),
               ),
               IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '');
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => AddToCard()));
+                    Navigator.pushNamed(context, '/addToCard');
                   },
                   icon: const Icon(Icons.shopping_cart_outlined))
             ],
@@ -78,19 +95,14 @@ class _OrderState extends State<Order> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(
-              //   "assets/images/orderSuccessfull-1.png",
-              //   height: 100,
-              //   width: 100,
-              // ),
               const SizedBox(
                 height: 80,
               ),
-              Text(
+              const Text(
                 'Order Placed Successfully',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               // Image.asset(
@@ -98,25 +110,25 @@ class _OrderState extends State<Order> {
               //   height: 60,
               //   width: 60,
               // ),
-              Text(
+              const Text(
                 'hurray!! your order is confirmed',
                 style: TextStyle(fontSize: 13),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 'The order id is #123456 save the order id for',
                 style: TextStyle(fontSize: 13),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
-              Text(
+              const Text(
                 'further communication.',
                 style: TextStyle(fontSize: 13),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Padding(
@@ -129,32 +141,32 @@ class _OrderState extends State<Order> {
                         width: 2),
                     children: [
                       TableRow(children: [
-                        Column(children: [
+                        Column(children: const [
                           Text('Email us', style: TextStyle(fontSize: 20.0))
                         ]),
-                        Column(children: [
+                        Column(children: const [
                           Text('Contact us', style: TextStyle(fontSize: 20.0))
                         ]),
-                        Column(children: [
+                        Column(children: const [
                           Text('Address', style: TextStyle(fontSize: 20.0))
                         ]),
                       ]),
                       TableRow(children: [
-                        Column(children: [
+                        Column(children: const [
                           Padding(
-                            padding: const EdgeInsets.all(3.0),
+                            padding: EdgeInsets.all(3.0),
                             child: Text('admin@bookstore.com'),
                           )
                         ]),
-                        Column(children: [
+                        Column(children: const [
                           Padding(
-                            padding: const EdgeInsets.all(3.0),
+                            padding: EdgeInsets.all(3.0),
                             child: Text('+91 8163475881'),
                           )
                         ]),
-                        Column(children: [
+                        Column(children: const [
                           Padding(
-                            padding: const EdgeInsets.all(3.0),
+                            padding: EdgeInsets.all(3.0),
                             child: Text(
                                 '42, 14th Main, 15th Cross, Sector 4, opp to BDA /n complex, near Kumarakom restaurant, HSR Layout, Bangalore 560034'),
                           )
@@ -162,42 +174,7 @@ class _OrderState extends State<Order> {
                       ]),
                     ]),
               ),
-              // SingleChildScrollView(
-              //   child: DataTable(columnSpacing: 10, columns: const <DataColumn>[
 
-              //     DataColumn(
-              //       label: Text(
-              //         'Email us',
-              //         style: TextStyle(fontStyle: FontStyle.italic),
-              //       ),
-              //     ),
-              //     DataColumn(
-              //       label: Text(
-              //         'Contact us',
-              //         style: TextStyle(fontStyle: FontStyle.italic),
-              //       ),
-              //     ),
-              //     DataColumn(
-              //       label: Text(
-              //         'Address',
-              //         style: TextStyle(fontStyle: FontStyle.italic),
-              //       ),
-              //     ),
-              //   ], rows:
-
-              //    const <DataRow>[
-              //     DataRow(
-              //       cells: <DataCell>[
-              //         DataCell(Text('admin@bookstore.com')),
-              //         DataCell(Text('+91 8163475881')),
-              //         DataCell(
-              //           Text(
-              //               '42, 14th Main, 15th Cross, Sector 4, opp to BDA /n complex, near Kumarakom restaurant, HSR Layout, Bangalore 560034'),
-              //         ),
-              //       ],
-              //     ),
-              //   ]),
-              // ),
               TextButton(
                 child: const Text(
                   'CONTINUE SHOPPING',
@@ -211,6 +188,25 @@ class _OrderState extends State<Order> {
                   )),
                 ),
                 onPressed: () {
+                  Map<String, dynamic> bookCardData = {
+                    "name": orderData['name'],
+                    "pinCode": orderData['pinCode'],
+                    "locality": orderData['locality'],
+                    "address": orderData['address'],
+                    "city": orderData['city'],
+                    "landmark": orderData['landmark'],
+                    "type": orderData['type'],
+                    "bookName": orderData['bookName'],
+                    "price": orderData['price']
+                  };
+                  FirebaseFirestore.instance
+                      .collection("orderData")
+                      .add(bookCardData);
+                  FirebaseFirestore.instance
+                      .collection('Add-To-Card')
+                      .doc(orderData['cardId'])
+                      .delete();
+
                   Navigator.pushNamed(context, '/home');
                 },
               ),

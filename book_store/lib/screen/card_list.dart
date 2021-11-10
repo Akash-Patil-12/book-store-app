@@ -1,5 +1,7 @@
 //import 'dart:convert';
 
+import 'package:book_store/controller/removeFromCard_controller.dart';
+import 'package:book_store/controller/search_controller.dart';
 import 'package:book_store/model/books.dart';
 //import 'package:book_store/screen/add_to_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -47,41 +49,7 @@ class _CardListState extends State<CardList> {
         title: Row(children: [
           //Text('Bookstore'),
           Expanded(
-              child: Container(
-                  color: Colors.white,
-                  child: TextField(
-                    onChanged: (value) {
-                      // if (value != " ") {
-                      //   setState(() {
-                      //     data = bookData
-                      //         .where((bookData) => bookData['title']
-                      //             .toString()
-                      //             .toLowerCase()
-                      //             .contains(value.toLowerCase()))
-                      //         .toList();
-                      //     print("..........................");
-                      //     print(data);
-                      //   });
-                      // }
-                    },
-                    cursorColor: Colors.grey,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(2),
-                        hintText: "Search...",
-                        fillColor: Colors.white,
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _focusNode.hasFocus
-                                    ? Colors.grey.shade600
-                                    : Colors.grey.shade500))),
-                  ))),
+              child: SearchController(searchTextfieldCallBack: (value) {})),
         ]),
         actions: [
           Stack(
@@ -167,26 +135,17 @@ class _CardListState extends State<CardList> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: TextButton(
-                                        child: const Text(
-                                          'Remove From Card',
-                                          style: TextStyle(
-                                              fontSize: 9, color: Colors.white),
-                                        ),
-                                        style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.brown)),
-                                        onPressed: () {
-                                          FirebaseFirestore.instance
-                                              .collection('Add-To-Card')
-                                              .doc(
-                                                  snapshot.data!.docs[index].id)
-                                              .delete();
-                                          setState(() {
-                                            cardCount = cardCount - 1;
-                                          });
-                                        }),
+                                    child: RemoveFromCard(
+                                      removeFromCardCallBack: () {
+                                        FirebaseFirestore.instance
+                                            .collection('Add-To-Card')
+                                            .doc(snapshot.data!.docs[index].id)
+                                            .delete();
+                                        setState(() {
+                                          cardCount = cardCount - 1;
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ],
                               ),
@@ -207,4 +166,24 @@ class _CardListState extends State<CardList> {
       ),
     );
   }
+
+//   TextButton removeFromCard(
+//       AsyncSnapshot<QuerySnapshot<Object?>> snapshot, int index) {
+//     return TextButton(
+//         child: const Text(
+//           'Remove From Card',
+//           style: TextStyle(fontSize: 9, color: Colors.white),
+//         ),
+//         style: ButtonStyle(
+//             backgroundColor: MaterialStateProperty.all(Colors.brown)),
+//         onPressed: () {
+//           FirebaseFirestore.instance
+//               .collection('Add-To-Card')
+//               .doc(snapshot.data!.docs[index].id)
+//               .delete();
+//           setState(() {
+//             cardCount = cardCount - 1;
+//           });
+//         });
+//   }
 }

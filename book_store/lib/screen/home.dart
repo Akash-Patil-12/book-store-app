@@ -1,10 +1,9 @@
 import 'dart:async';
-//import 'dart:convert';
-
+import 'package:book_store/controller/search_controller.dart';
+import 'package:book_store/controller/wishlist_controller.dart';
 import 'package:book_store/model/books.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/services.dart';
 
 class home extends StatefulWidget {
   home({Key? key}) : super(key: key);
@@ -46,49 +45,32 @@ class _homeState extends State<home> {
         backgroundColor: Colors.brown,
         title: Row(children: [
           //Text('Bookstore'),
-          Expanded(
-              child: Container(
-                  color: Colors.white,
-                  child: TextField(
-                    onChanged: (value) {
-                      if (value.isNotEmpty) {
-                        setState(() {
-                          //   bookData = allBookData;
-                          bookData = filterBookData
-                              .where((bookData) => bookData.title
-                                  .toString()
-                                  .toLowerCase()
-                                  .contains(value.toLowerCase()))
-                              .toList();
-                          print("..........................");
-                          print(bookData);
-                        });
-                      }
-                      if (value.isEmpty) {
-                        print('..........else..........');
-                        setState(() {
-                          bookData = filterBookData;
-                        });
-                      }
-                    },
-                    cursorColor: Colors.grey,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(2),
-                        hintText: "Search...",
-                        fillColor: Colors.white,
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.horizontal(),
-                        ),
-                        prefixIcon: const Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: _focusNode.hasFocus
-                                    ? Colors.grey.shade600
-                                    : Colors.grey.shade500))),
-                  ))),
+          Expanded(child: SearchController(
+            searchTextfieldCallBack: (value) {
+              if (value.isNotEmpty) {
+                setState(() {
+                  //   bookData = allBookData;
+                  bookData = filterBookData
+                      .where((bookData) => bookData.title
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                      .toList();
+                  print("..........................");
+                  print(bookData);
+                });
+              }
+              if (value.isEmpty) {
+                print('..........else..........');
+                setState(() {
+                  bookData = filterBookData;
+                });
+              }
+              print(
+                  ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
+              print(value);
+            },
+          )),
         ]),
         actions: [
           Stack(
@@ -255,29 +237,14 @@ class _homeState extends State<home> {
                                                       .add(bookCardData);
                                                 },
                                               ),
-                                              TextButton(
-                                                child: const Text(
-                                                  'WISHLIST',
-                                                  style: TextStyle(
-                                                      fontSize: 9,
-                                                      color: Colors.black),
-                                                ),
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Colors.white),
-                                                  shape:
-                                                      MaterialStateProperty.all(
-                                                          RoundedRectangleBorder(
-                                                    side: const BorderSide(
-                                                        color: Colors.black),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            4.0),
-                                                  )),
-                                                ),
-                                                onPressed: () {},
-                                              ),
+                                              WishListController(
+                                                wishListControllerCallBack:
+                                                    (value) {
+                                                  print(
+                                                      '.................WishList.....................');
+                                                  print(value);
+                                                },
+                                              ), ///////////////////////////
                                             ],
                                           ),
                                         ],
@@ -293,4 +260,67 @@ class _homeState extends State<home> {
             ),
     );
   }
+
+  // TextButton WishListTextButton() {
+  //   return TextButton(
+  //     child: const Text(
+  //       'WISHLIST',
+  //       style: TextStyle(fontSize: 9, color: Colors.black),
+  //     ),
+  //     style: ButtonStyle(
+  //       backgroundColor: MaterialStateProperty.all(Colors.white),
+  //       shape: MaterialStateProperty.all(RoundedRectangleBorder(
+  //         side: const BorderSide(color: Colors.black),
+  //         borderRadius: BorderRadius.circular(4.0),
+  //       )),
+  //     ),
+  //     onPressed: () {},
+  //   );
+  // }
+
+  //Container searchController() {
+  // return
+  // Container(
+  //     color: Colors.white,
+  //     child: TextField(
+  //       onChanged: (value) {
+  //         if (value.isNotEmpty) {
+  //           setState(() {
+  //             //   bookData = allBookData;
+  //             bookData = filterBookData
+  //                 .where((bookData) => bookData.title
+  //                     .toString()
+  //                     .toLowerCase()
+  //                     .contains(value.toLowerCase()))
+  //                 .toList();
+  //             print("..........................");
+  //             print(bookData);
+  //           });
+  //         }
+  //         if (value.isEmpty) {
+  //           print('..........else..........');
+  //           setState(() {
+  //             bookData = filterBookData;
+  //           });
+  //         }
+  //       },
+  //       cursorColor: Colors.grey,
+  //       decoration: InputDecoration(
+  //           contentPadding: const EdgeInsets.all(2),
+  //           hintText: "Search...",
+  //           fillColor: Colors.white,
+  //           border: const OutlineInputBorder(
+  //             borderRadius: BorderRadius.horizontal(),
+  //           ),
+  //           prefixIcon: const Icon(
+  //             Icons.search,
+  //             color: Colors.black,
+  //           ),
+  //           focusedBorder: OutlineInputBorder(
+  //               borderSide: BorderSide(
+  //                   color: _focusNode.hasFocus
+  //                       ? Colors.grey.shade600
+  //                       : Colors.grey.shade500))),
+  //     ));
+  // }
 }

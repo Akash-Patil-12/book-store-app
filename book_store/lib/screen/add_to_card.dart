@@ -1,3 +1,4 @@
+import 'package:book_store/model/books.dart';
 import 'package:flutter/material.dart';
 
 enum SingingCharacter { Home, Work, Other }
@@ -13,14 +14,17 @@ class AddToCard extends StatefulWidget {
 class _AddToCardState extends State<AddToCard> {
   SingingCharacter? _character = SingingCharacter.Home;
   final FocusNode _focusNode = FocusNode();
+  // late int cardCount = 0;
+  String deliveryPlace = "Home";
+  Map cardData = {};
+  int itemCount = 0;
+
   bool isSummaryVisible = false,
       isCustomerVisible = true,
       isCustomerDetailVisible = false,
       isOrderSummaryVisible = true,
       isOrderDetailSummaryVisible = false;
 
-  Map cardData = {};
-  int itemCount = 1;
   TextEditingController name = TextEditingController();
   TextEditingController phoneNo = TextEditingController();
   TextEditingController pinCode = TextEditingController();
@@ -28,6 +32,20 @@ class _AddToCardState extends State<AddToCard> {
   TextEditingController city = TextEditingController();
   TextEditingController landmark = TextEditingController();
   TextEditingController address = TextEditingController();
+
+  Future<void> getCardDataCount() async {
+    int count = await getCardCount();
+    setState(() {
+      itemCount = count;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getCardDataCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +63,7 @@ class _AddToCardState extends State<AddToCard> {
                 child: Container(
                     color: Colors.white,
                     child: TextField(
-                      onChanged: (value) {
-                        // if (value != " ") {
-                        //   setState(() {
-                        //     data = bookData
-                        //         .where((bookData) => bookData['title']
-                        //             .toString()
-                        //             .toLowerCase()
-                        //             .contains(value.toLowerCase()))
-                        //         .toList();
-                        //     print("..........................");
-                        //     print(data);
-                        //   });
-                        // }
-                      },
+                      onChanged: (value) {},
                       cursorColor: Colors.grey,
                       decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(2),
@@ -87,14 +92,14 @@ class _AddToCardState extends State<AddToCard> {
                   child: Container(
                     width: 150,
                     height: 150,
-                    child: const Text("1",
-                        style: TextStyle(fontSize: 15, color: Colors.red)),
+                    child: Text(itemCount.toString(),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.red)),
                   ),
                 ),
                 IconButton(
                     onPressed: () {
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) => AddToCard()));
+                      Navigator.pushNamed(context, '/card_list');
                     },
                     icon: const Icon(Icons.shopping_cart_outlined))
               ],
@@ -443,6 +448,7 @@ class _AddToCardState extends State<AddToCard> {
                                                 (SingingCharacter? value) {
                                               setState(() {
                                                 _character = value;
+                                                deliveryPlace = "Home";
                                               });
                                               print(".....home");
                                             },
@@ -455,6 +461,7 @@ class _AddToCardState extends State<AddToCard> {
                                                 (SingingCharacter? value) {
                                               setState(() {
                                                 _character = value;
+                                                deliveryPlace = "Work";
                                               });
 
                                               print(".......Work");
@@ -468,6 +475,7 @@ class _AddToCardState extends State<AddToCard> {
                                                 (SingingCharacter? value) {
                                               setState(() {
                                                 _character = value;
+                                                deliveryPlace = "Other";
                                               });
 
                                               print(".......other");
@@ -621,7 +629,21 @@ class _AddToCardState extends State<AddToCard> {
                                               MaterialStateProperty.all(
                                                   Colors.blue)),
                                       onPressed: () {
-                                        Navigator.pushNamed(context, '/order');
+                                        Navigator.pushNamed(context, '/order',
+                                            arguments: {
+                                              'cardId': cardData['id'],
+                                              'name': name.text,
+                                              'pinCode': pinCode.text,
+                                              'locality': locality.text,
+                                              'address': address.text,
+                                              'city': city.text,
+                                              'landmark': city.text,
+                                              'type': deliveryPlace,
+                                              'bookName': cardData['title'],
+                                              'price': (int.parse(
+                                                      cardData['price']) *
+                                                  itemCount)
+                                            });
                                       },
                                     ),
                                   ],
