@@ -13,12 +13,7 @@ class _OrderState extends State<Order> {
   final FocusNode _focusNode = FocusNode();
   Map orderData = {};
   int cardCount = 1;
-  Future<void> getCardDataCount() async {
-    int count = await getCardCount();
-    setState(() {
-      cardCount = count;
-    });
-  }
+  Future<void> getCardDataCount() async {}
 
   @override
   void initState() {
