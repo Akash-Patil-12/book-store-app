@@ -12,11 +12,11 @@ class Order extends StatefulWidget {
 class _OrderState extends State<Order> {
   final FocusNode _focusNode = FocusNode();
   Map orderData = {};
-  int itemCount = 1;
+  int cardCount = 1;
   Future<void> getCardDataCount() async {
     int count = await getCardCount();
     setState(() {
-      itemCount = count;
+      cardCount = count;
     });
   }
 
@@ -74,7 +74,7 @@ class _OrderState extends State<Order> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child: Text(itemCount.toString(),
+                  child: Text(cardCount.toString(),
                       style: const TextStyle(fontSize: 15, color: Colors.red)),
                 ),
               ),
@@ -197,7 +197,7 @@ class _OrderState extends State<Order> {
                     "landmark": orderData['landmark'],
                     "type": orderData['type'],
                     "bookName": orderData['bookName'],
-                    "price": orderData['price']
+                    "price": orderData['price'].toString()
                   };
                   FirebaseFirestore.instance
                       .collection("orderData")

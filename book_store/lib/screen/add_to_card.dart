@@ -1,5 +1,8 @@
+import 'package:book_store/componant/search_controller.dart';
+import 'package:book_store/controller/card_count.dart';
 import 'package:book_store/model/books.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 enum SingingCharacter { Home, Work, Other }
 
@@ -13,18 +16,15 @@ class AddToCard extends StatefulWidget {
 
 class _AddToCardState extends State<AddToCard> {
   SingingCharacter? _character = SingingCharacter.Home;
-  final FocusNode _focusNode = FocusNode();
-  // late int cardCount = 0;
   String deliveryPlace = "Home";
   Map cardData = {};
-  int itemCount = 0;
-
+  int cardCount = 0;
+  int itemCount = 1;
   bool isSummaryVisible = false,
       isCustomerVisible = true,
       isCustomerDetailVisible = false,
       isOrderSummaryVisible = true,
       isOrderDetailSummaryVisible = false;
-
   TextEditingController name = TextEditingController();
   TextEditingController phoneNo = TextEditingController();
   TextEditingController pinCode = TextEditingController();
@@ -33,27 +33,27 @@ class _AddToCardState extends State<AddToCard> {
   TextEditingController landmark = TextEditingController();
   TextEditingController address = TextEditingController();
 
-  Future<void> getCardDataCount() async {
-    int count = await getCardCount();
-    setState(() {
-      itemCount = count;
-    });
-  }
+  // Future<void> getCardDataCount() async {
+  //   //int count = await getCardCount();
+  //   // setState(() {
+  //   //   cardCount = count;
+  //   // });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCardDataCount();
+    //getCardDataCount();
   }
 
   @override
   Widget build(BuildContext context) {
+    final cardCountController = Get.put(CardCountController());
     cardData = ModalRoute.of(context)!.settings.arguments as Map;
 
     var width = MediaQuery.of(context).size.width;
     print('.....................');
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.brown,
@@ -62,26 +62,9 @@ class _AddToCardState extends State<AddToCard> {
             Expanded(
                 child: Container(
                     color: Colors.white,
-                    child: TextField(
-                      onChanged: (value) {},
-                      cursorColor: Colors.grey,
-                      decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(2),
-                          hintText: "Search...",
-                          fillColor: Colors.white,
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.horizontal(),
-                          ),
-                          prefixIcon: const Icon(
-                            Icons.search,
-                            color: Colors.black,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: _focusNode.hasFocus
-                                      ? Colors.grey.shade600
-                                      : Colors.grey.shade500))),
-                    ))),
+                    child: SearchController(
+                        hintText: "Search..",
+                        searchTextfieldCallBack: (value) {}))),
           ]),
           actions: [
             Stack(
@@ -92,9 +75,15 @@ class _AddToCardState extends State<AddToCard> {
                   child: Container(
                     width: 150,
                     height: 150,
-                    child: Text(itemCount.toString(),
-                        style:
-                            const TextStyle(fontSize: 15, color: Colors.red)),
+                    child:
+                        // Text(cardCount.toString(),
+                        //     style:
+                        //         const TextStyle(fontSize: 15, color: Colors.red)),
+                        GetX<CardCountController>(builder: (controller) {
+                      return Text(controller.cardCount.toString(),
+                          style:
+                              const TextStyle(fontSize: 15, color: Colors.red));
+                    }),
                   ),
                 ),
                 IconButton(
@@ -130,9 +119,6 @@ class _AddToCardState extends State<AddToCard> {
                                 color: Colors.black87),
                           ),
                         ),
-                        // const SizedBox(
-                        //   height: 0,
-                        // ),
                         Row(
                           children: [
                             Column(
@@ -172,7 +158,7 @@ class _AddToCardState extends State<AddToCard> {
                                 ),
                                 Text(
                                     "Rs." +
-                                        (int.parse(cardData['price']) *
+                                        (double.parse(cardData['price']) *
                                                 itemCount)
                                             .toString(),
                                     style: const TextStyle(
@@ -238,11 +224,6 @@ class _AddToCardState extends State<AddToCard> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      //   Text(
-                                      //     'Remove',
-                                      //     style: TextStyle(
-                                      //         fontWeight: FontWeight.bold),
-                                      //   )
                                     ],
                                   ),
                                 )
@@ -269,7 +250,7 @@ class _AddToCardState extends State<AddToCard> {
                             child: InkWell(
                               child: Container(
                                 width: double.infinity,
-                                child: Padding(
+                                child: const Padding(
                                   padding: EdgeInsets.all(10),
                                   child: Text('Customer Details',
                                       style: TextStyle(
@@ -429,7 +410,7 @@ class _AddToCardState extends State<AddToCard> {
                                         )),
                                   ],
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
                                   child: Column(
@@ -508,16 +489,16 @@ class _AddToCardState extends State<AddToCard> {
                                             isOrderSummaryVisible = false;
                                             isOrderDetailSummaryVisible = true;
                                           });
-                                          print(
-                                              '..............continue.................');
-                                          print(name.text);
-                                          print(phoneNo.text);
-                                          print(pinCode.text);
-                                          print(locality.text);
-                                          print(address.text);
-                                          print(city.text);
-                                          print(landmark.text);
-                                          print(_character);
+                                          // print(
+                                          //     '..............continue.................');
+                                          // print(name.text);
+                                          // print(phoneNo.text);
+                                          // print(pinCode.text);
+                                          // print(locality.text);
+                                          // print(address.text);
+                                          // print(city.text);
+                                          // print(landmark.text);
+                                          // print(_character);
                                         },
                                       ),
                                     ],
@@ -540,7 +521,7 @@ class _AddToCardState extends State<AddToCard> {
                       children: [
                         Visibility(
                           visible: isOrderSummaryVisible,
-                          child: Padding(
+                          child: const Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
                               'Order Summary',
@@ -580,7 +561,7 @@ class _AddToCardState extends State<AddToCard> {
                                       )
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 20,
                                   ),
                                   Column(
@@ -605,7 +586,8 @@ class _AddToCardState extends State<AddToCard> {
                                         ),
                                         Text(
                                             "Rs." +
-                                                (int.parse(cardData['price']) *
+                                                (double.parse(
+                                                            cardData['price']) *
                                                         itemCount)
                                                     .toString(),
                                             style: const TextStyle(
@@ -633,14 +615,14 @@ class _AddToCardState extends State<AddToCard> {
                                             arguments: {
                                               'cardId': cardData['id'],
                                               'name': name.text,
-                                              'pinCode': pinCode.text,
                                               'locality': locality.text,
+                                              'pinCode': pinCode.text,
                                               'address': address.text,
                                               'city': city.text,
                                               'landmark': city.text,
                                               'type': deliveryPlace,
                                               'bookName': cardData['title'],
-                                              'price': (int.parse(
+                                              'price': (double.parse(
                                                       cardData['price']) *
                                                   itemCount)
                                             });

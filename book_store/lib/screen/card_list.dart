@@ -1,11 +1,13 @@
 //import 'dart:convert';
 
-import 'package:book_store/controller/removeFromCard_controller.dart';
-import 'package:book_store/controller/search_controller.dart';
+import 'package:book_store/componant/removeFromCard_controller.dart';
+import 'package:book_store/componant/search_controller.dart';
+import 'package:book_store/controller/card_count.dart';
 import 'package:book_store/model/books.dart';
 //import 'package:book_store/screen/add_to_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CardList extends StatefulWidget {
   const CardList({Key? key}) : super(key: key);
@@ -15,22 +17,24 @@ class CardList extends StatefulWidget {
 }
 
 class _CardListState extends State<CardList> {
+  final cardCountController = Get.put(CardCountController());
+
   final FocusNode _focusNode = FocusNode();
   List<Book> cardData = [];
-  late int cardCount = 0;
+  // late int cardCount = 0;
 
-  Future<void> getCardDataCount() async {
-    int count = await getCardCount();
-    setState(() {
-      cardCount = count;
-    });
-  }
+  // Future<void> getCardDataCount() async {
+  //   int count = await getCardCount();
+  //   setState(() {
+  //     cardCount = count;
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCardDataCount();
+    // getCardDataCount();
     //  getCards();
   }
 
@@ -49,7 +53,8 @@ class _CardListState extends State<CardList> {
         title: Row(children: [
           //Text('Bookstore'),
           Expanded(
-              child: SearchController(searchTextfieldCallBack: (value) {})),
+              child: SearchController(
+                  hintText: "Search..", searchTextfieldCallBack: (value) {})),
         ]),
         actions: [
           Stack(
@@ -60,8 +65,14 @@ class _CardListState extends State<CardList> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child: Text(cardCount.toString(),
-                      style: const TextStyle(fontSize: 15, color: Colors.red)),
+                  child:
+                      //  Text(cardCount.toString(),
+                      //     style: const TextStyle(fontSize: 15, color: Colors.red)),
+                      GetX<CardCountController>(builder: (controller) {
+                    return Text(controller.cardCount.toString(),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.red));
+                  }),
                 ),
               ),
               IconButton(
@@ -121,7 +132,9 @@ class _CardListState extends State<CardList> {
                                       fontSize: 10, color: Colors.grey),
                                 ),
                                 Text(
-                                    "Rs." + snapshot.data!.docs[index]['price'],
+                                    "Rs." +
+                                        snapshot.data!.docs[index]['price']
+                                            .toString(),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.bold)),
                               ],
@@ -136,14 +149,19 @@ class _CardListState extends State<CardList> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: RemoveFromCard(
-                                      removeFromCardCallBack: () {
-                                        FirebaseFirestore.instance
+                                      removeFromCardCallBack: () async {
+                                        await FirebaseFirestore.instance
                                             .collection('Add-To-Card')
                                             .doc(snapshot.data!.docs[index].id)
                                             .delete();
-                                        setState(() {
-                                          cardCount = cardCount - 1;
-                                        });
+                                        cardCountController.getCardCount();
+                                        var snackBar = const SnackBar(
+                                          content:
+                                              Text("Book remove from card"),
+                                          duration: Duration(milliseconds: 250),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
                                       },
                                     ),
                                   ),
@@ -158,7 +176,7 @@ class _CardListState extends State<CardList> {
                         'image': snapshot.data!.docs[index]['image'],
                         'title': snapshot.data!.docs[index]['title'],
                         'author': snapshot.data!.docs[index]['author'],
-                        'price': snapshot.data!.docs[index]['price']
+                        'price': snapshot.data!.docs[index]['price'].toString()
                       });
                     });
               });

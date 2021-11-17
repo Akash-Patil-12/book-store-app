@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 
 class Book {
   String id;
-  String image;
+  String image; //image url
   String title;
   String author;
-  String price;
+
+  ///author name
+  double price;
   Book(
       {required this.id,
       required this.image,
@@ -21,27 +23,23 @@ class Book {
         image: json['image'] as String,
         title: json['title'] as String,
         author: json['author'] as String,
-        price: json['price'] as String);
+        price: double.parse(json['price']));
   }
 }
 
-Future<List<Book>> readBookJson() async {
+Future<List<Book>> readBookListFromJsonFile() async {
   List<Book> bookData = [];
   final String response = await rootBundle.loadString('assets/books.json');
   var data = json.decode(response);
   for (var bookjson in data) {
     bookData.add(Book.fromJson(bookjson));
   }
-  print('................................');
-  print(bookData);
   return bookData;
 }
 
-Future<int> getCardCount() async {
-  Query collectionReference =
-      FirebaseFirestore.instance.collection('Add-To-Card');
-  QuerySnapshot querySnapshot = await collectionReference.get();
-  print('........CardCount...........');
-  print(querySnapshot.docs.length);
-  return querySnapshot.docs.length;
-}
+// Future<int> getCardCount() async {
+//   Query collectionReference =
+//       FirebaseFirestore.instance.collection('Add-To-Card');
+//   QuerySnapshot querySnapshot = await collectionReference.get();
+//   return querySnapshot.docs.length;
+// }

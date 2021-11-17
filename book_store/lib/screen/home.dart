@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'package:book_store/controller/search_controller.dart';
-import 'package:book_store/controller/wishlist_controller.dart';
+import 'package:book_store/componant/search_controller.dart';
+import 'package:book_store/componant/wishlist_controller.dart';
+import 'package:book_store/controller/card_count.dart';
 import 'package:book_store/model/books.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class home extends StatefulWidget {
   home({Key? key}) : super(key: key);
@@ -13,21 +15,21 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  final FocusNode _focusNode = FocusNode();
+  final cardCountController = Get.put(CardCountController());
   String dropdownValue = 'Sort by relevance';
-  List<Book> bookData = [];
-  List<Book> filterBookData = [];
-  int cardCount = 0;
+  List<Book> bookListData = [];
+  List<Book> filterBookListData = [];
+  //int cardCount = 0;
   Future<void> getBookData() async {
-    filterBookData = await readBookJson();
-    print(bookData);
-    int count = await getCardCount();
+    filterBookListData = await readBookListFromJsonFile();
+    print(bookListData);
+    // int count = await getCardCount();
     setState(() {
-      bookData = filterBookData;
-      cardCount = count;
+      bookListData = filterBookListData;
+      //cardCount = count;
     });
     print('*******************************************************');
-    print(cardCount);
+    // print(cardCount);
   }
 
   @override
@@ -45,25 +47,27 @@ class _homeState extends State<home> {
         backgroundColor: Colors.brown,
         title: Row(children: [
           //Text('Bookstore'),
-          Expanded(child: SearchController(
+          Expanded(
+              child: SearchController(
+            hintText: "Search..",
             searchTextfieldCallBack: (value) {
               if (value.isNotEmpty) {
                 setState(() {
                   //   bookData = allBookData;
-                  bookData = filterBookData
+                  bookListData = filterBookListData
                       .where((bookData) => bookData.title
                           .toString()
                           .toLowerCase()
                           .contains(value.toLowerCase()))
                       .toList();
                   print("..........................");
-                  print(bookData);
+                  print(bookListData);
                 });
               }
               if (value.isEmpty) {
                 print('..........else..........');
                 setState(() {
-                  bookData = filterBookData;
+                  bookListData = filterBookListData;
                 });
               }
               print(
@@ -81,8 +85,14 @@ class _homeState extends State<home> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child: Text(cardCount.toString(),
-                      style: const TextStyle(fontSize: 15, color: Colors.red)),
+                  child:
+                      // Text(cardCount.toString(),
+                      //     style: const TextStyle(fontSize: 15, color: Colors.red))
+                      GetX<CardCountController>(builder: (controller) {
+                    return Text(controller.cardCount.toString(),
+                        style:
+                            const TextStyle(fontSize: 15, color: Colors.red));
+                  }),
                 ),
               ),
               IconButton(
@@ -96,7 +106,7 @@ class _homeState extends State<home> {
           )
         ],
       ),
-      body: bookData.isEmpty
+      body: bookListData.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(8.0),
@@ -119,17 +129,26 @@ class _homeState extends State<home> {
                         onChanged: (String? newValue) {
                           setState(() {
                             dropdownValue = newValue!;
+                            // if (newValue == "Sort by relevance") {
+                            //   print('.......sort relevance...........');
+                            //   print(filterBookListData);
+                            //   setState(() {
+                            //     bookListData = filterBookListData;
+                            //   });
+                            // }
                             if (newValue == "Price: Low to High") {
-                              print('>>>>>>>>>>>>>>>>>>>>>>>>');
-                              bookData.sort((a, b) {
-                                return a.price.compareTo(b.price);
-                              });
-                              print(bookData);
+                              print('>>>>>>>>>>>low to high>>>>>>>>>>>>>');
+                              // setState(() {
+
+                              // });
+                              bookListData
+                                  .sort((a, b) => a.price.compareTo(b.price));
+                              print(bookListData);
                             }
                             if (newValue == "Price: High to Low") {
-                              print('>>>>>>>>>>>>>>>>>>>>>>>>');
+                              print('>>>>>>>>>>High to low>>>>>>>>>>>>>>');
                               //bookData.sort();
-                              bookData
+                              bookListData
                                   .sort((b, a) => a.price.compareTo(b.price));
                             }
                           });
@@ -149,7 +168,7 @@ class _homeState extends State<home> {
                   ),
                   Expanded(
                     child: GridView.builder(
-                        itemCount: bookData.length,
+                        itemCount: bookListData.length,
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: MediaQuery.of(context).orientation ==
                                   Orientation.landscape
@@ -171,7 +190,7 @@ class _homeState extends State<home> {
                                           Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: Image.asset(
-                                              bookData[index].image,
+                                              bookListData[index].image,
                                               height: 64,
                                               width: 70,
                                               fit: BoxFit.fill,
@@ -189,16 +208,20 @@ class _homeState extends State<home> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          Text(bookData[index].title,
+                                          Text(bookListData[index].title,
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           Text(
-                                            "by " + bookData[index].author,
+                                            "by " + bookListData[index].author,
                                             style: const TextStyle(
                                                 fontSize: 10,
                                                 color: Colors.grey),
                                           ),
-                                          Text("Rs." + bookData[index].price,
+                                          Text(
+                                              "Rs." +
+                                                  bookListData[index]
+                                                      .price
+                                                      .toString(),
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           Row(
@@ -216,25 +239,44 @@ class _homeState extends State<home> {
                                                     backgroundColor:
                                                         MaterialStateProperty
                                                             .all(Colors.brown)),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    cardCount = cardCount + 1;
-                                                  });
+                                                onPressed: () async {
+                                                  //cardCountController
+                                                  //  .getCardCount();
+                                                  // setState(() {
+                                                  //   cardCount = cardCount + 1;
+                                                  // });
                                                   Map<String, dynamic>
                                                       bookCardData = {
-                                                    "id": bookData[index].id,
-                                                    "image":
-                                                        bookData[index].image,
-                                                    "title":
-                                                        bookData[index].title,
+                                                    "id":
+                                                        bookListData[index].id,
+                                                    "image": bookListData[index]
+                                                        .image,
+                                                    "title": bookListData[index]
+                                                        .title,
                                                     "author":
-                                                        bookData[index].author,
-                                                    "price":
-                                                        bookData[index].price,
+                                                        bookListData[index]
+                                                            .author,
+                                                    "price": bookListData[index]
+                                                        .price
+                                                        .toString(),
                                                   };
-                                                  FirebaseFirestore.instance
+
+                                                  await FirebaseFirestore
+                                                      .instance
                                                       .collection("Add-To-Card")
                                                       .add(bookCardData);
+                                                  // Future.delayed(const Duration(
+                                                  //     microseconds: 100));
+                                                  cardCountController
+                                                      .getCardCount();
+                                                  var snackBar = const SnackBar(
+                                                    content: Text(
+                                                        "Book added to card"),
+                                                    duration: Duration(
+                                                        milliseconds: 250),
+                                                  );
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(snackBar);
                                                 },
                                               ),
                                               WishListController(
@@ -260,67 +302,4 @@ class _homeState extends State<home> {
             ),
     );
   }
-
-  // TextButton WishListTextButton() {
-  //   return TextButton(
-  //     child: const Text(
-  //       'WISHLIST',
-  //       style: TextStyle(fontSize: 9, color: Colors.black),
-  //     ),
-  //     style: ButtonStyle(
-  //       backgroundColor: MaterialStateProperty.all(Colors.white),
-  //       shape: MaterialStateProperty.all(RoundedRectangleBorder(
-  //         side: const BorderSide(color: Colors.black),
-  //         borderRadius: BorderRadius.circular(4.0),
-  //       )),
-  //     ),
-  //     onPressed: () {},
-  //   );
-  // }
-
-  //Container searchController() {
-  // return
-  // Container(
-  //     color: Colors.white,
-  //     child: TextField(
-  //       onChanged: (value) {
-  //         if (value.isNotEmpty) {
-  //           setState(() {
-  //             //   bookData = allBookData;
-  //             bookData = filterBookData
-  //                 .where((bookData) => bookData.title
-  //                     .toString()
-  //                     .toLowerCase()
-  //                     .contains(value.toLowerCase()))
-  //                 .toList();
-  //             print("..........................");
-  //             print(bookData);
-  //           });
-  //         }
-  //         if (value.isEmpty) {
-  //           print('..........else..........');
-  //           setState(() {
-  //             bookData = filterBookData;
-  //           });
-  //         }
-  //       },
-  //       cursorColor: Colors.grey,
-  //       decoration: InputDecoration(
-  //           contentPadding: const EdgeInsets.all(2),
-  //           hintText: "Search...",
-  //           fillColor: Colors.white,
-  //           border: const OutlineInputBorder(
-  //             borderRadius: BorderRadius.horizontal(),
-  //           ),
-  //           prefixIcon: const Icon(
-  //             Icons.search,
-  //             color: Colors.black,
-  //           ),
-  //           focusedBorder: OutlineInputBorder(
-  //               borderSide: BorderSide(
-  //                   color: _focusNode.hasFocus
-  //                       ? Colors.grey.shade600
-  //                       : Colors.grey.shade500))),
-  //     ));
-  // }
 }

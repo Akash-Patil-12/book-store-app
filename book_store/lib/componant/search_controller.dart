@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 
 class SearchController extends StatefulWidget {
   // const SearchController({Key? key}) : super(key: key);
+  String hintText;
   final Function searchTextfieldCallBack;
-  SearchController({required this.searchTextfieldCallBack});
+  SearchController(
+      {required this.searchTextfieldCallBack, required this.hintText});
 
   @override
   _SearchControllerState createState() =>
-      _SearchControllerState(searchTextfieldCallBack);
+      _SearchControllerState(searchTextfieldCallBack, hintText);
 }
 
 class _SearchControllerState extends State<SearchController> {
   // SearchController({this.searchTextfieldCallBack});
+  String hintText;
   final Function searchTextfieldCallBack;
   final FocusNode _focusNode = FocusNode();
 
-  _SearchControllerState(this.searchTextfieldCallBack);
+  _SearchControllerState(this.searchTextfieldCallBack, this.hintText);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,7 +30,7 @@ class _SearchControllerState extends State<SearchController> {
           cursorColor: Colors.grey,
           decoration: InputDecoration(
               contentPadding: const EdgeInsets.all(2),
-              hintText: "Search...",
+              hintText: hintText,
               fillColor: Colors.white,
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.horizontal(),

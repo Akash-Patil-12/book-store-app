@@ -29,7 +29,7 @@ class _WishListControllerState extends State<WishListController> {
         )),
       ),
       onPressed: () {
-        wishListControllerCallBack("akash");
+        wishListControllerCallBack();
       },
     );
   }
