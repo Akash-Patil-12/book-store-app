@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:book_store/componant/search_controller.dart';
 import 'package:book_store/componant/wishlist_controller.dart';
 import 'package:book_store/controller/card_count.dart';
-import 'package:book_store/model/books.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:book_store/model/book.dart';
+import 'package:book_store/screen/service/home_service.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,22 +20,17 @@ class _homeState extends State<home> {
   String dropdownValue = 'Sort by relevance';
   List<Book> bookListData = [];
   List<Book> filterBookListData = [];
-  //int cardCount = 0;
   Future<void> getBookData() async {
     filterBookListData = await readBookListFromJsonFile();
     print(bookListData);
-    // int count = await getCardCount();
     setState(() {
       bookListData = filterBookListData;
-      //cardCount = count;
     });
     print('*******************************************************');
-    // print(cardCount);
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getBookData();
   }
@@ -46,14 +42,12 @@ class _homeState extends State<home> {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.brown,
         title: Row(children: [
-          //Text('Bookstore'),
           Expanded(
               child: SearchController(
             hintText: "Search..",
             searchTextfieldCallBack: (value) {
               if (value.isNotEmpty) {
                 setState(() {
-                  //   bookData = allBookData;
                   bookListData = filterBookListData
                       .where((bookData) => bookData.title
                           .toString()
@@ -85,10 +79,7 @@ class _homeState extends State<home> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child:
-                      // Text(cardCount.toString(),
-                      //     style: const TextStyle(fontSize: 15, color: Colors.red))
-                      GetX<CardCountController>(builder: (controller) {
+                  child: GetX<CardCountController>(builder: (controller) {
                     return Text(controller.cardCount.toString(),
                         style:
                             const TextStyle(fontSize: 15, color: Colors.red));
@@ -98,8 +89,6 @@ class _homeState extends State<home> {
               IconButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/card_list');
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => AddToCard()));
                   },
                   icon: const Icon(Icons.shopping_cart_outlined))
             ],
@@ -129,25 +118,21 @@ class _homeState extends State<home> {
                         onChanged: (String? newValue) {
                           setState(() {
                             dropdownValue = newValue!;
-                            // if (newValue == "Sort by relevance") {
-                            //   print('.......sort relevance...........');
-                            //   print(filterBookListData);
-                            //   setState(() {
-                            //     bookListData = filterBookListData;
-                            //   });
-                            // }
+                            if (newValue == "Sort by relevance") {
+                              print('.......sort relevance...........');
+                              print(filterBookListData);
+                              setState(() {
+                                bookListData = filterBookListData;
+                              });
+                            }
                             if (newValue == "Price: Low to High") {
                               print('>>>>>>>>>>>low to high>>>>>>>>>>>>>');
-                              // setState(() {
-
-                              // });
                               bookListData
                                   .sort((a, b) => a.price.compareTo(b.price));
                               print(bookListData);
                             }
                             if (newValue == "Price: High to Low") {
                               print('>>>>>>>>>>High to low>>>>>>>>>>>>>>');
-                              //bookData.sort();
                               bookListData
                                   .sort((b, a) => a.price.compareTo(b.price));
                             }
@@ -190,7 +175,7 @@ class _homeState extends State<home> {
                                           Padding(
                                             padding: const EdgeInsets.all(4.0),
                                             child: Image.asset(
-                                              bookListData[index].image,
+                                              bookListData[index].imageUrl,
                                               height: 64,
                                               width: 70,
                                               fit: BoxFit.fill,
@@ -212,7 +197,8 @@ class _homeState extends State<home> {
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold)),
                                           Text(
-                                            "by " + bookListData[index].author,
+                                            "by " +
+                                                bookListData[index].authorName,
                                             style: const TextStyle(
                                                 fontSize: 10,
                                                 color: Colors.grey),
@@ -240,33 +226,27 @@ class _homeState extends State<home> {
                                                         MaterialStateProperty
                                                             .all(Colors.brown)),
                                                 onPressed: () async {
-                                                  //cardCountController
-                                                  //  .getCardCount();
-                                                  // setState(() {
-                                                  //   cardCount = cardCount + 1;
-                                                  // });
                                                   Map<String, dynamic>
                                                       bookCardData = {
                                                     "id":
                                                         bookListData[index].id,
                                                     "image": bookListData[index]
-                                                        .image,
+                                                        .imageUrl,
                                                     "title": bookListData[index]
                                                         .title,
                                                     "author":
                                                         bookListData[index]
-                                                            .author,
+                                                            .authorName,
                                                     "price": bookListData[index]
                                                         .price
                                                         .toString(),
                                                   };
-
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection("Add-To-Card")
-                                                      .add(bookCardData);
-                                                  // Future.delayed(const Duration(
-                                                  //     microseconds: 100));
+                                                  addToCardBook(
+                                                      bookCardData); //add book to firebase to maintain card count
+                                                  // await FirebaseFirestore
+                                                  //     .instance
+                                                  //     .collection("Add-To-Card")
+                                                  //     .add(bookCardData);
                                                   cardCountController
                                                       .getCardCount();
                                                   var snackBar = const SnackBar(

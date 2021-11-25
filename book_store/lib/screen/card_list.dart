@@ -1,10 +1,7 @@
-//import 'dart:convert';
-
 import 'package:book_store/componant/removeFromCard_controller.dart';
 import 'package:book_store/componant/search_controller.dart';
 import 'package:book_store/controller/card_count.dart';
-import 'package:book_store/model/books.dart';
-//import 'package:book_store/screen/add_to_card.dart';
+import 'package:book_store/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,24 +15,11 @@ class CardList extends StatefulWidget {
 
 class _CardListState extends State<CardList> {
   final cardCountController = Get.put(CardCountController());
-
-  final FocusNode _focusNode = FocusNode();
   List<Book> cardData = [];
-  // late int cardCount = 0;
-
-  // Future<void> getCardDataCount() async {
-  //   int count = await getCardCount();
-  //   setState(() {
-  //     cardCount = count;
-  //   });
-  // }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // getCardDataCount();
-    //  getCards();
   }
 
   @override
@@ -51,7 +35,6 @@ class _CardListState extends State<CardList> {
           },
         ),
         title: Row(children: [
-          //Text('Bookstore'),
           Expanded(
               child: SearchController(
                   hintText: "Search..", searchTextfieldCallBack: (value) {})),
@@ -65,10 +48,7 @@ class _CardListState extends State<CardList> {
                 child: Container(
                   width: 150,
                   height: 150,
-                  child:
-                      //  Text(cardCount.toString(),
-                      //     style: const TextStyle(fontSize: 15, color: Colors.red)),
-                      GetX<CardCountController>(builder: (controller) {
+                  child: GetX<CardCountController>(builder: (controller) {
                     return Text(controller.cardCount.toString(),
                         style:
                             const TextStyle(fontSize: 15, color: Colors.red));
@@ -76,10 +56,7 @@ class _CardListState extends State<CardList> {
                 ),
               ),
               IconButton(
-                  onPressed: () {
-                    // Navigator.push(context,
-                    //     MaterialPageRoute(builder: (context) => AddToCard()));
-                  },
+                  onPressed: () {},
                   icon: const Icon(Icons.shopping_cart_outlined))
             ],
           )
@@ -101,11 +78,11 @@ class _CardListState extends State<CardList> {
                     child: Card(
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black12, width: 1),
+                          side:
+                              const BorderSide(color: Colors.black12, width: 1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Container(
-                            //width: double.infinity,
                             child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -139,9 +116,6 @@ class _CardListState extends State<CardList> {
                                         fontWeight: FontWeight.bold)),
                               ],
                             ),
-                            // SizedBox(
-                            //   height: 30,
-                            // ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -184,24 +158,4 @@ class _CardListState extends State<CardList> {
       ),
     );
   }
-
-//   TextButton removeFromCard(
-//       AsyncSnapshot<QuerySnapshot<Object?>> snapshot, int index) {
-//     return TextButton(
-//         child: const Text(
-//           'Remove From Card',
-//           style: TextStyle(fontSize: 9, color: Colors.white),
-//         ),
-//         style: ButtonStyle(
-//             backgroundColor: MaterialStateProperty.all(Colors.brown)),
-//         onPressed: () {
-//           FirebaseFirestore.instance
-//               .collection('Add-To-Card')
-//               .doc(snapshot.data!.docs[index].id)
-//               .delete();
-//           setState(() {
-//             cardCount = cardCount - 1;
-//           });
-//         });
-//   }
 }

@@ -8,24 +8,22 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Book Store',
-      initialRoute: '/home',
+      initialRoute: '/home', // This widget is the root of your application.
       routes: {
         '/home': (context) => home(),
         '/addToCard': (context) => AddToCard(),
-        '/card_list': (context) => CardList(),
+        '/card_list': (context) => const CardList(),
         '/order': (context) => Order()
       },
     );

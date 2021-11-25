@@ -1,8 +1,8 @@
 import 'package:book_store/componant/search_controller.dart';
 import 'package:book_store/controller/card_count.dart';
-import 'package:book_store/model/books.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 
 enum SingingCharacter { Home, Work, Other }
 
@@ -12,7 +12,6 @@ class AddToCard extends StatefulWidget {
   @override
   _AddToCardState createState() => _AddToCardState();
 }
-// enum SingingCharacter { lafayette, jefferson }
 
 class _AddToCardState extends State<AddToCard> {
   SingingCharacter? _character = SingingCharacter.Home;
@@ -33,16 +32,8 @@ class _AddToCardState extends State<AddToCard> {
   TextEditingController landmark = TextEditingController();
   TextEditingController address = TextEditingController();
 
-  // Future<void> getCardDataCount() async {
-  //   //int count = await getCardCount();
-  //   // setState(() {
-  //   //   cardCount = count;
-  //   // });
-  // }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //getCardDataCount();
   }
@@ -58,7 +49,6 @@ class _AddToCardState extends State<AddToCard> {
         appBar: AppBar(
           backgroundColor: Colors.brown,
           title: Row(children: [
-            //Text('Bookstore'),
             Expanded(
                 child: Container(
                     color: Colors.white,
@@ -178,7 +168,6 @@ class _AddToCardState extends State<AddToCard> {
                                                   color: Colors.grey)),
                                           child: const Icon(
                                             Icons.remove,
-                                            // color: Colors.white,
                                           ),
                                         ),
                                         onTap: () {
@@ -212,7 +201,6 @@ class _AddToCardState extends State<AddToCard> {
                                                   color: Colors.grey)),
                                           child: const Icon(
                                             Icons.add,
-                                            // color: Colors.white,
                                           ),
                                         ),
                                         onTap: () {
@@ -289,6 +277,9 @@ class _AddToCardState extends State<AddToCard> {
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: name,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "Name",
                                               hintStyle: TextStyle(
@@ -296,14 +287,14 @@ class _AddToCardState extends State<AddToCard> {
                                               ),
                                               border: OutlineInputBorder()),
                                         )),
-                                    // SizedBox(
-                                    //   width: 20,
-                                    // ),
                                     Container(
                                         height: 50,
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: phoneNo,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "Phone Number",
                                               hintStyle: TextStyle(
@@ -325,6 +316,9 @@ class _AddToCardState extends State<AddToCard> {
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: pinCode,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "Pincode",
                                               hintStyle: TextStyle(
@@ -332,14 +326,14 @@ class _AddToCardState extends State<AddToCard> {
                                               ),
                                               border: OutlineInputBorder()),
                                         )),
-                                    // SizedBox(
-                                    //   width: 20,
-                                    // ),
                                     Container(
                                         height: 50,
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: locality,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "Locality",
                                               hintStyle: TextStyle(
@@ -349,7 +343,7 @@ class _AddToCardState extends State<AddToCard> {
                                         )),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -364,6 +358,9 @@ class _AddToCardState extends State<AddToCard> {
                                         height: 100,
                                         child: TextFormField(
                                             controller: address,
+                                            validator: RequiredValidator(
+                                                errorText:
+                                                    "This field is required"),
                                             decoration: const InputDecoration(
                                                 hintText: "Address",
                                                 border: InputBorder.none,
@@ -386,6 +383,9 @@ class _AddToCardState extends State<AddToCard> {
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: city,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "City/Town",
                                               hintStyle: TextStyle(
@@ -393,14 +393,14 @@ class _AddToCardState extends State<AddToCard> {
                                               ),
                                               border: OutlineInputBorder()),
                                         )),
-                                    // SizedBox(
-                                    //   width: 20,
-                                    // ),
                                     Container(
                                         height: 50,
                                         width: width / 2.39,
                                         child: TextFormField(
                                           controller: landmark,
+                                          validator: RequiredValidator(
+                                              errorText:
+                                                  "This field is required"),
                                           decoration: const InputDecoration(
                                               hintText: "Landmark",
                                               hintStyle: TextStyle(
@@ -489,16 +489,6 @@ class _AddToCardState extends State<AddToCard> {
                                             isOrderSummaryVisible = false;
                                             isOrderDetailSummaryVisible = true;
                                           });
-                                          // print(
-                                          //     '..............continue.................');
-                                          // print(name.text);
-                                          // print(phoneNo.text);
-                                          // print(pinCode.text);
-                                          // print(locality.text);
-                                          // print(address.text);
-                                          // print(city.text);
-                                          // print(landmark.text);
-                                          // print(_character);
                                         },
                                       ),
                                     ],
